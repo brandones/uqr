@@ -14,6 +14,7 @@
 #'@return NULL
 #'@examples NULL
 urqb <- function(data=data,tau=tau,formula=formula,kernel=NULL,cluster=cluster) {
+  data <- as.data.frame(data)
   #library(Hmisc)
   if(is.null(kernel)) kernel<-"gaussian"
   #if(is.null(tau)) tau<-1:9/10
@@ -23,13 +24,13 @@ urqb <- function(data=data,tau=tau,formula=formula,kernel=NULL,cluster=cluster) 
     #which(is.na(data[,idx.dep]))->miss
     #data2=data[-miss,]
     formula=as.formula(formula)
-    as.data.frame(data)
+    data <- as.data.frame(data)
     idx.dep=which(colnames(data)==all.vars(formula)[1])
     data2=data
     
     
-    wtd.quantile(data2[,idx.dep],tau,weights=data$wts,normwt=TRUE)->q
-    density(data[,idx.dep],kernel=kernel,weights=data$wts)->f
+    wtd.quantile(data2[, idx.dep], tau, weights = data$wts, normwt = TRUE) -> q
+    density(data[, idx.dep], kernel = kernel, weights = data$wts) -> f
     approx(f$x, f$y, q)$y->fq
     RIF=q[i]+((tau[i]-indicator(data2[,idx.dep]<q[i]))/fq[i])
     
